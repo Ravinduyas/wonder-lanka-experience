@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Clock, MapPin, Check, Sparkles, Star, Plus, Minus, Calendar, Users, Send, CheckCircle2, AlertCircle, Compass, ShieldCheck } from 'lucide-react';
+import { Clock, MapPin, Check, Sparkles, Star, Plus, Minus, Calendar, Users, Send, CheckCircle2 } from 'lucide-react';
 import { tours, destinations } from '../data';
 import { Tour } from '../types';
 
@@ -272,7 +272,7 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
             <div className="grid grid-cols-1 lg:grid-cols-12">
               
               {/* Part 1: Interactive Draft Form */}
-              <div className="lg:col-span-7 p-6 sm:p-10 space-y-8">
+              <div className="lg:col-span-12 p-6 sm:p-10 space-y-8">
                 <div className="space-y-2">
                   <div className="flex items-center space-x-1 border-l-4 border-amber-505 border-amber-500 pl-3">
                     <Sparkles className="w-5 h-5 text-amber-500 animate-spin" style={{ animationDuration: '4s' }} />
@@ -452,78 +452,6 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
                     />
                   </div>
                 </form>
-              </div>
-
-              {/* Part 2: Interactive Real-Time Itinerary Previsualizer */}
-              <div className="lg:col-span-5 p-6 sm:p-10 bg-neutral-920 bg-neutral-950/60 border-t lg:border-t-0 lg:border-l border-neutral-850 flex flex-col justify-between">
-                <div className="space-y-6">
-                  <div className="pb-4 border-b border-neutral-850">
-                    <h4 className="text-sm font-semibold tracking-wide font-sans text-neutral-50 uppercase flex items-center gap-1.5">
-                      <Compass className="w-5 h-5 text-amber-500" />
-                      <span>Live Proposal Previsualizer</span>
-                    </h4>
-                    <p className="text-xs text-neutral-450 text-neutral-400 mt-1">Your detailed draft draws dynamically here based on your destination toggles.</p>
-                  </div>
-
-                  {/* Dynamic outline render */}
-                  {selectedDests.length === 0 ? (
-                    <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
-                      <AlertCircle className="w-12 h-12 text-neutral-600 animate-pulse" />
-                      <p className="text-xs text-neutral-450 text-neutral-400 max-w-xs leading-relaxed font-sans">
-                        No locations selected yet. Check individual Ceylon locations above to dynamically seed your multi-day custom route.
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Traveler detail badges */}
-                      <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="bg-neutral-900 text-neutral-300 px-3 py-1 rounded-full font-semibold border border-neutral-800">
-                          👤 Client: <span className="text-amber-400">{customName || 'Awaiting Name...'}</span>
-                        </span>
-                        <span className="bg-neutral-900 text-neutral-300 px-3 py-1 rounded-full font-semibold border border-neutral-800">
-                          👥 {numTravelers} Travelers
-                        </span>
-                        <span className="bg-neutral-900 text-neutral-300 px-3 py-1 rounded-full font-semibold border border-neutral-800">
-                          🏨 {travelClass} Tier
-                        </span>
-                      </div>
-
-                      {/* Route Map representation line */}
-                      <div className="p-3 bg-neutral-900 rounded-xl border border-neutral-850 space-y-1">
-                        <span className="text-[9px] uppercase font-mono tracking-wider text-amber-500 font-bold">Planned Route Map:</span>
-                        <div className="text-xs font-semibold text-neutral-200 flex flex-wrap items-center gap-1.5">
-                          <span>Airport</span>
-                          {selectedDests.map((dest, i) => (
-                            <span key={i} className="flex items-center gap-1.5">
-                              <span className="text-amber-400">➔</span>
-                              <span>{dest.split('(')[0].trim()}</span>
-                            </span>
-                          ))}
-                          <span className="text-amber-400">➔</span>
-                          <span>Departure</span>
-                        </div>
-                      </div>
-
-                      {/* Day-by-Day List */}
-                      <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
-                        {previewItinerary.map((day, dIdx) => (
-                          <div key={dIdx} className="flex gap-2.5 items-start bg-neutral-900/40 p-3 rounded-xl border border-neutral-850">
-                            <span className="w-5 h-5 rounded-full bg-emerald-900 text-emerald-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                              {dIdx + 1}
-                            </span>
-                            <span className="text-xs text-neutral-300 leading-relaxed font-sans">{day}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Secure Trust Stamp */}
-                <div className="mt-8 pt-4 border-t border-neutral-850 flex items-center space-x-3 text-xs text-neutral-400">
-                  <ShieldCheck className="w-6 h-6 text-emerald-400 shrink-0" />
-                  <p>Our dedicated 24/7 Colombo operation center confirms custom outlines within 2 hours with pricing structures.</p>
-                </div>
               </div>
 
             </div>

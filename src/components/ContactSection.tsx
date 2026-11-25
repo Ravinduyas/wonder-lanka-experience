@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Phone, Calendar, Users, Send, CheckCircle2, MapPin, Clock, ArrowRight } from 'lucide-react';
+import { Mail, Phone, Calendar, Users, Send, CheckCircle2, MapPin, Clock, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 import { destinations } from '../data';
+import { sendBookingEmail, buildBookingWhatsAppUrl, BookingDetails } from '../sendBooking';
 
 interface ContactSectionProps {
   inquiryPrePopulate?: any;
@@ -23,6 +24,9 @@ export default function ContactSection({ inquiryPrePopulate, onClearPrePopulate 
   // Submission control
   const [submittedForms, setSubmittedForms] = useState<any[]>([]);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [sendError, setSendError] = useState(false);
+  const [lastWhatsAppUrl, setLastWhatsAppUrl] = useState('');
 
   // Read submitted contact enquiries from localStorage on mount
   useEffect(() => {
@@ -60,12 +64,13 @@ export default function ContactSection({ inquiryPrePopulate, onClearPrePopulate 
     );
   };
 
-  const handleSubmitEnquiry = (e: React.FormEvent) => {
+  const handleSubmitEnquiry = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !email.trim() || !whatsapp.trim() || !country.trim()) {
       alert('Please fill out all required fields marked with *');
       return;
     }
+    if (isSending) return;
 
     const newEnquiry = {
       id: 'enquiry_' + Date.now(),
@@ -81,6 +86,37 @@ export default function ContactSection({ inquiryPrePopulate, onClearPrePopulate 
       createdAt: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       status: 'Awaiting Expert Review'
     };
+
+    const booking: BookingDetails = {
+      name: newEnquiry.name,
+      email: newEnquiry.email,
+      whatsapp: newEnquiry.whatsapp,
+      country: newEnquiry.country,
+      travelDates: newEnquiry.travelDates,
+      numGuests: newEnquiry.numGuests,
+      tourType: newEnquiry.tourType,
+      destinations: newEnquiry.selectedDestinations,
+      message: newEnquiry.message,
+    };
+
+    // 1) Open WhatsApp with the booking pre-typed. This must happen right away, inside the
+    //    click, or browsers treat it as a pop-up and block it.
+    const waUrl = buildBookingWhatsAppUrl(booking);
+    setLastWhatsAppUrl(waUrl);
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+
+    // 2) Email the booking to the office at the same time.
+    setIsSending(true);
+    setSendError(false);
+    try {
+      await sendBookingEmail(booking);
+    } catch (err) {
+      console.error('Booking email failed', err);
+      setSendError(true);
+      return; // keep the form filled so the guest can retry
+    } finally {
+      setIsSending(false);
+    }
 
     const updated = [newEnquiry, ...submittedForms];
     setSubmittedForms(updated);
@@ -374,11 +410,30 @@ export default function ContactSection({ inquiryPrePopulate, onClearPrePopulate 
               </div>
 
               {/* Submit btn */}
+              {sendError && (
+                <div role="alert" className="flex items-start gap-2.5 p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/5 text-xs text-neutral-300">
+                  <AlertCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
+                  <p>
+                    Your inquiry email could not be sent. Please press <strong>Send</strong> in the{' '}
+                    <a href={lastWhatsAppUrl || 'https://wa.me/94771958093'} target="_blank" rel="noopener noreferrer" className="font-semibold text-emerald-400 underline">WhatsApp chat</a>{' '}
+                    we opened with your details, or check your connection and try again. Your details are still in the form.
+                  </p>
+                </div>
+              )}
               <button
                 type="submit"
-                className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold tracking-wide shadow-lg transition-all hover:translate-y-[-1px] cursor-pointer"
+                disabled={isSending}
+                aria-busy={isSending}
+                className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold tracking-wide shadow-lg transition-all hover:translate-y-[-1px] cursor-pointer disabled:opacity-70 disabled:cursor-wait disabled:hover:translate-y-0 flex items-center justify-center gap-2"
               >
-                Send Secure Inquiry Proposal
+                {isSending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Sending your inquiry…</span>
+                  </>
+                ) : (
+                  <span>Send Secure Inquiry Proposal</span>
+                )}
               </button>
             </form>
           </div>
@@ -469,11 +524,22 @@ export default function ContactSection({ inquiryPrePopulate, onClearPrePopulate 
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <h3 className="text-lg font-bold text-neutral-50 font-sans">
-                Inquiry Logged Successfully!
+                Inquiry Sent Successfully!
               </h3>
               <p className="text-xs text-neutral-400 leading-relaxed font-sans">
-                Thank you for choosing Wonder Lanka Experience. Your consultation files are compiled. One of our destination specialists will text you on WhatsApp within 2 hours.
+                Thank you for choosing Wonder Lanka Experience. Your inquiry has been emailed to our team, and WhatsApp has opened with your booking details. Press <strong>Send</strong> there and a specialist will reply shortly.
               </p>
+
+              {lastWhatsAppUrl && (
+                <a
+                  href={lastWhatsAppUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full py-2.5 bg-[#25D366] hover:bg-[#1EBE5A] text-white rounded-xl text-xs font-bold"
+                >
+                  WhatsApp didn't open? Tap here
+                </a>
+              )}
 
               <button
                 onClick={() => setShowSuccessModal(false)}
