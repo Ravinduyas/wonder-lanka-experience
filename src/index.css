@@ -1,0 +1,192 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /*
+   * Light "island daylight" palette.
+   * The neutral scale is flipped and warmed: 900/950 (the page and card
+   * surfaces) are coconut-cream and beach-sand, 50-400 (the text) are
+   * cinnamon-bark ink. Components keep their existing neutral-* classes.
+   */
+  --color-neutral-50: #1c1712;
+  --color-neutral-100: #29221a;
+  --color-neutral-200: #3a3127;
+  --color-neutral-300: #4d4337;
+  --color-neutral-400: #6b6052;
+  --color-neutral-500: #7a6f60;
+  --color-neutral-600: #b3a794;
+  --color-neutral-700: #d6cbb8;
+  --color-neutral-800: #e7ddcb;
+  --color-neutral-850: #ede4d4;
+  --color-neutral-900: #fffcf6;
+  --color-neutral-950: #f8f2e7;
+
+  /* Tea-leaf greens: dark shades become soft tints, light shades become readable text */
+  --color-emerald-300: #17623e;
+  --color-emerald-400: #1f7a4d;
+  --color-emerald-800: #c5e3cf;
+  --color-emerald-900: #ddefe3;
+  --color-emerald-950: #ecf6ef;
+
+  /* Turmeric / cinnamon accents, deepened so they read on cream */
+  --color-amber-300: #7c4706;
+  --color-amber-400: #9a5a0a;
+  --color-amber-500: #a8620b;
+}
+
+/* Restores the original dark palette for content sitting on photos (hero, image cards, lightbox) */
+.theme-dark {
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-850: #1f1f1f;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+  --color-emerald-300: #6ee7b7;
+  --color-emerald-400: #34d399;
+  --color-emerald-800: #065f46;
+  --color-emerald-900: #064e3b;
+  --color-emerald-950: #022c22;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+}
+
+/* Custom scrollbar styling to match the warm light look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f8f2e7;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6cbb8;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b3a794;
+}
+
+
+/* ---------- Motion: loading effects, reveals and transitions (driven by src/effects.ts) ---------- */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll progress bar in the brand colours */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 60;
+  transform: scaleX(0);
+  transform-origin: left;
+  background: linear-gradient(90deg, #d95c1c, #16b1bc, #5ba370);
+  pointer-events: none;
+}
+
+/* Images: sand shimmer while loading, soft fade-in once loaded */
+img:not([data-loaded]) {
+  color: transparent;
+  background: linear-gradient(100deg, #ede4d4 30%, #f8f2e7 50%, #ede4d4 70%);
+  background-size: 200% 100%;
+  animation: img-shimmer 1.4s linear infinite;
+}
+.theme-dark img:not([data-loaded]) {
+  background-image: linear-gradient(100deg, #1f1f1f 30%, #2e2e2e 50%, #1f1f1f 70%);
+}
+img[data-loaded] {
+  animation: img-fade-in 0.7s ease-out backwards;
+}
+
+/* Scroll reveal. `backwards` fill only, so hover transforms keep working afterwards */
+[data-reveal]:not([data-revealed]) {
+  opacity: 0;
+}
+[data-reveal][data-revealed] {
+  animation: reveal-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.no-reveal [data-reveal] {
+  opacity: 1;
+}
+
+/* Card hover lift */
+.hover-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease, border-color 0.3s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px -18px rgb(74 55 30 / 0.35);
+}
+
+/* Buttons and links: smooth state changes and a tactile press.
+   In the base layer so per-element Tailwind transition utilities still win. */
+@layer base {
+  button,
+  a {
+    transition-property: color, background-color, border-color, box-shadow, transform, scale, opacity;
+    transition-duration: 0.25s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  button:active {
+    transform: scale(0.97);
+  }
+}
+:is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid #16b1bc;
+  outline-offset: 2px;
+}
+
+.animate-spin-slow {
+  animation: spin 6s linear infinite;
+}
+
+@keyframes img-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+@keyframes img-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
