@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ZoomIn, X, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import sigiriyaImg from '../assets/images/srilanka_cultural_hero_1781713945959.jpg';
+import ellaBridgeImg from '../assets/images/guest_ella_bridge_1781777061231.jpg';
 
 const galleryItems = [
   {
-    image: 'https://images.unsplash.com/photo-1588598130841-3837f8a35e74?auto=format&fit=crop&q=80&w=1200',
+    image: sigiriyaImg,
     title: 'Sigiriya Rock Morning Climb',
     caption: 'Rising 200m from the forest, Sigiriya features world-renowned frescoes and royal boulder terraces.'
   },
   {
-    image: 'https://images.unsplash.com/photo-1563189333-e57551cc7204?auto=format&fit=crop&q=80&w=1200',
+    image: ellaBridgeImg,
     title: 'The Nine Arch Bridge, Ella',
     caption: 'Marvel at 19th-century colonial railway engineering, where vintage trains run above tea leaves.'
   },

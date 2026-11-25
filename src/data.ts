@@ -1,11 +1,16 @@
 import { Destination, Tour, Experience, BlogPost, FAQItem } from './types';
+import sigiriyaImg from './assets/images/srilanka_cultural_hero_1781713945959.jpg';
+import ellaBridgeImg from './assets/images/guest_ella_bridge_1781777061231.jpg';
+import coastImg from './assets/images/srilanka_beach_1781713979894.jpg';
+import ancientRuinsImg from './assets/images/guest_temple_galle_1781777090700.jpg';
+import hikingImg from './assets/images/guest_tea_hills_1781777106908.jpg';
 
 export const destinations: Destination[] = [
   {
     id: 'sigiriya',
     name: 'Sigiriya (Lion Rock)',
     overview: 'Rising dramatically 200 meters above the central plains, Sigiriya is an ancient palace and fortress complex built in the 5th century. A UNESCO World Heritage site, it’s renowned for its exquisite frescoes, the monumental Lion’s Paw gateway, and the remains of advanced hydraulic gardens.',
-    image: 'https://images.unsplash.com/photo-1588598130841-3837f8a35e74?auto=format&fit=crop&q=80&w=1200',
+    image: sigiriyaImg,
     bestTime: 'January to April (Dry, pleasant climbing weather)',
     attractions: [
       'The Sigiriya Lion Rock Fortress peak',
@@ -57,7 +62,7 @@ export const destinations: Destination[] = [
     id: 'ella',
     name: 'Ella (The Mountain Paradise)',
     overview: 'Ella is a small, laid-back sanctuary in the central highlands, surrounded by emerald tea plantations, deep valleys, and majestic waterfalls. Popular for hiking, cycling, and spectacular scenery, it offers some of the most dramatic views in Sri Lanka.',
-    image: 'https://images.unsplash.com/photo-1563189333-e57551cc7204?auto=format&fit=crop&q=80&w=1200',
+    image: ellaBridgeImg,
     bestTime: 'January to May (Clear skies for hiking)',
     attractions: [
       'The landmark Demodara Nine Arch Bridge',
@@ -233,7 +238,7 @@ export const destinations: Destination[] = [
     id: 'trincomalee',
     name: 'Trincomalee (The Blue Horizon)',
     overview: 'Boasting one of the finest deep-water natural harbors in the world, Trincomalee is a beautiful, serene coastal city on the northeast coast. Flanked by powder-white beaches, historic forts, and sacred clifftop Hindu temples, it’s also a premier whale watching destination.',
-    image: 'https://images.unsplash.com/photo-150752428034-b723cf961d3e?auto=format&fit=crop&q=80&w=1200',
+    image: coastImg,
     bestTime: 'May to October (Calm, shimmering sapphire waters on northeast coast)',
     attractions: [
       'Nilaveli Beach and marble-clear Pigeon Island National Park',
@@ -258,7 +263,7 @@ export const destinations: Destination[] = [
     id: 'polonnaruwa',
     name: 'Polonnaruwa (The Medieval Kingdom)',
     overview: 'The secondary royal capital of Sri Lanka, flourishing between the 11th and 13th centuries. A meticulously preserved archaeological park, it features colossal stone carvings, colossal circular relic houses, and massive artificial inland reservoirs.',
-    image: 'https://images.unsplash.com/photo-1608958416812-70b55eff7be0?auto=format&fit=crop&q=80&w=1200',
+    image: ancientRuinsImg,
     bestTime: 'December to March (Minimal rains, cooler afternoons)',
     attractions: [
       'The majestic ancient Vatadage (circular structure with stone Buddhas)',
@@ -331,7 +336,7 @@ export const experiences: Experience[] = [
     title: 'Highland Trekking & Hiking',
     category: 'Adventure',
     description: 'Ascend dramatic mountain peaks, pass through emerald-green tea estates, and gaze down towering drop-offs. Sri Lanka’s mountainous heartland features spectacular trekking for all experience levels.',
-    image: 'https://images.unsplash.com/photo-1551632322-35950d9499d0?auto=format&fit=crop&q=80&w=800',
+    image: hikingImg,
     activities: [
       'Challenging hikes up the rocky paths of Ella Rock',
       'Sunrise walks up Little Adam’s Peak under fresh breezes',
@@ -630,7 +635,7 @@ export const blogPosts: BlogPost[] = [
     date: 'May 28, 2026',
     readTime: '5 min read',
     author: 'Dilhani Perera',
-    image: 'https://images.unsplash.com/photo-1588598130841-3837f8a35e74?auto=format&fit=crop&q=80&w=800'
+    image: sigiriyaImg
   },
   {
     id: 'blog3',
