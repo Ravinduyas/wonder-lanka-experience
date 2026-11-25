@@ -4,6 +4,19 @@ import { Clock, MapPin, Check, Sparkles, Star, Plus, Minus, Calendar, Users, Sen
 import { tours, destinations } from '../data';
 import { Tour } from '../types';
 
+// Where the private chauffeured tour picks the guests up
+const START_POINTS = [
+  'Colombo Airport (BIA, Katunayake)',
+  'Colombo City',
+  'Negombo',
+  'Weligama',
+  'Galle',
+  'Mirissa',
+  'Kandy',
+  'Bentota',
+  'Mattala Airport (HRI)',
+];
+
 interface ToursSectionProps {
   preSelectedInquiryName?: string;
   onPlanTripInquire: (formData: any) => void;
@@ -20,6 +33,7 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
   const [preferredTourType, setPreferredTourType] = useState('Honeymoon Package');
   const [selectedDests, setSelectedDests] = useState<string[]>([]);
   const [travelClass, setTravelClass] = useState('Premium Boutique');
+  const [startFrom, setStartFrom] = useState(START_POINTS[0]);
   const [specialNote, setSpecialNote] = useState('');
 
   // Submitted custom drafts list tracked via localStorage
@@ -81,12 +95,16 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
     }
     const days: string[] = [];
     selectedDests.forEach((dest, idx) => {
-      days.push(`Day ${idx * 2 + 1}: Arrival and luxury transfers to check-in near ${dest}. Explore evening attractions.`);
+      days.push(
+        idx === 0
+          ? `Day 1: Pick-up from ${startFrom} and private transfer to check-in near ${dest}. Explore evening attractions.`
+          : `Day ${idx * 2 + 1}: Scenic transfer and check-in near ${dest}. Explore evening attractions.`
+      );
       days.push(`Day ${idx * 2 + 2}: Multi-activity adventure and cultural sightseeing inside ${dest}. Private expert guiding included.`);
     });
-    days.push(`Day ${selectedDests.length * 2 + 1}: Scenic coastal return transport towards Colombo airport. Departure and traditional Ceylon goodbye ritual.`);
+    days.push(`Day ${selectedDests.length * 2 + 1}: Scenic return transfer to Colombo Airport or your chosen drop-off. Departure and traditional Ceylon goodbye ritual.`);
     setPreviewItinerary(days);
-  }, [selectedDests]);
+  }, [selectedDests, startFrom]);
 
   const handleCustomBuilderSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,6 +125,7 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
       preferredTourType,
       selectedDests,
       travelClass,
+      startFrom,
       specialNote,
       estimatedDays: selectedDests.length * 2 + 1,
       itineraryOutline: previewItinerary,
@@ -127,7 +146,7 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
       travelDates: travelDate,
       tourType: preferredTourType,
       destinations: selectedDests,
-      message: `Preferred class: ${travelClass}. ${specialNote}`
+      message: `Starting from: ${startFrom}. Preferred class: ${travelClass}. ${specialNote}`.trim()
     });
 
     // Reset some fields
@@ -369,9 +388,27 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
 
                   {/* Field: Select multiple destinations via checkbox grid */}
                   <div className="space-y-3">
-                    <label className="text-xs uppercase font-mono tracking-wider font-semibold text-neutral-300 block">
-                      Select Desired Locations (Multiple *):
-                    </label>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <label className="text-xs uppercase font-mono tracking-wider font-semibold text-neutral-300 block">
+                        Select Desired Locations (Multiple *):
+                      </label>
+                      <div className="flex items-center gap-2">
+                        <label htmlFor="custom-start-from" className="text-xs uppercase font-mono tracking-wider font-semibold text-neutral-300 flex items-center gap-1.5 shrink-0">
+                          <MapPin className="w-4 h-4 text-emerald-400" />
+                          <span>Starts from:</span>
+                        </label>
+                        <select
+                          id="custom-start-from"
+                          value={startFrom}
+                          onChange={(e) => setStartFrom(e.target.value)}
+                          className="w-full sm:w-auto bg-neutral-900 border border-neutral-800 focus:border-amber-400 rounded-xl px-3 py-2 text-sm text-neutral-200 focus:outline-none cursor-pointer"
+                        >
+                          {START_POINTS.map((point) => (
+                            <option key={point} value={point}>{point}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-neutral-900/50 p-4 rounded-2xl border border-neutral-850">
                       {destinations.map((dest) => {
                         const isSelected = selectedDests.includes(dest.name);
@@ -508,6 +545,11 @@ export default function ToursSection({ preSelectedInquiryName, onPlanTripInquire
                   <div className="space-y-1.5">
                     <p className="text-xs font-bold text-amber-500 uppercase font-mono">Mapped Route Stop-offs:</p>
                     <div className="flex flex-wrap gap-1.5 text-[11px]">
+                      {draft.startFrom && (
+                        <span className="bg-emerald-950/40 border border-emerald-500/30 text-emerald-300 px-2 py-0.5 rounded">
+                          Start: {draft.startFrom}
+                        </span>
+                      )}
                       {draft.selectedDests.map((sd: string, sIdx: number) => (
                         <span key={sIdx} className="bg-neutral-900 border border-neutral-800 text-neutral-300 px-2 py-0.5 rounded">
                           {sd.split('(')[0]}
